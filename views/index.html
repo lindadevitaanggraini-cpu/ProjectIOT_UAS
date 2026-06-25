@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home - Dashboard Kontrol & Kebakaran</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f0f3fb; color: #334155; padding: 30px; display: flex; justify-content: center; }
+        
+        /* Main Frame Dashboard */
+        .dashboard-container { width: 1000px; background-color: #ffffff; border-radius: 16px; overflow: hidden; padding: 25px; box-shadow: 0 10px 30px rgba(135, 148, 195, 0.15); border: 1px solid #e2e8f0; }
+        
+        /* Header Top Bar Elegan */
+        .dashboard-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; margin-bottom: 20px; border-bottom: 1px solid #f1f5f9; }
+        .dashboard-header h2 { color: #6259ca; font-size: 20px; font-weight: 700; letter-spacing: -0.3px; }
+        .dashboard-header p { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+        
+        /* Alert Box Kebakaran Darurat */
+        .alert-box { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); padding: 16px 20px; border-left: 5px solid #ef4444; display: none; margin-bottom: 20px; border-radius: 8px; font-weight: 600; color: #991b1b; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1); animation: blinker 1.5s linear infinite; }
+        .alert-box button { float: right; cursor: pointer; background: none; border: none; font-weight: 700; color: #991b1b; font-size: 14px; }
+        @keyframes blinker { 50% { opacity: 0.7; } }
+
+        /* Teks Status Lingkungan Terkini */
+        .live-text { font-size: 14px; color: #64748b; background: #f8fafc; padding: 12px 18px; border-radius: 8px; display: block; margin-bottom: 20px; border: 1px solid #e2e8f0; border-left: 4px solid #10b981; }
+        .live-text strong { color: #0f172a; }
+
+        /* Grid Layout */
+        .grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 25px; }
+        
+        /* Card Panel */
+        .card-panel { background-color: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); }
+        .card-panel h3 { font-size: 16px; color: #475569; margin-bottom: 15px; font-weight: 600; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+        
+        /* Container Tombol */
+        .btn-group { display: flex; flex-direction: column; gap: 12px; }
+        
+        /* Desain Tombol Mewah */
+        .btn-control { width: 100%; text-align: center; font-size: 14px; font-weight: 600; padding: 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; border: 1px solid #cbd5e1; }
+        
+        .btn-open  { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); color: #15803d; border-color: #bbf7d0; }
+        .btn-open:hover  { background: #15803d; color: #ffffff; transform: translateY(-1px); }
+        
+        .btn-close { background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%); color: #991b1b; border-color: #fecaca; }
+        .btn-close:hover { background: #991b1b; color: #ffffff; transform: translateY(-1px); }
+        
+        .btn-light { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); color: #b45309; border-color: #fde68a; }
+        .btn-light:hover { background: #b45309; color: #ffffff; transform: translateY(-1px); }
+
+        .btn-off   { background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); color: #475569; border-color: #cbd5e1; }
+        .btn-off:hover   { background: #475569; color: #ffffff; transform: translateY(-1px); }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div>
+            <h2>Dashboard Smart Home Monitor</h2>
+            <p>Sistem kendali lampu, garasi, dan monitoring bahaya kebakaran</p>
+        </div>
+    </div>
+
+    <div id="alertKebakaran" class="alert-box">
+        <span id="alertMessage">⚠️ BAHAYA! Kebakaran Terdeteksi! LED Merah & Buzzer Aktif!</span>
+        <button onclick="clearAlert()">Sembunyikan</button>
+    </div>
+
+    <div class="live-text">
+        Status Sistem Terkini: <strong><span id="statusTeks">Menunggu data dari Smart Home...</span></strong>
+    </div>
+
+    <div class="grid-layout">
+        <div class="card-panel">
+            <h3>🚪 Kontrol Pintu Garasi (Servo)</h3>
+            <div class="btn-group">
+                <button class="btn-control btn-open" onclick="kirimPerintah('1')">Buka Garasi (Ketik 1)</button>
+                <button class="btn-control btn-close" onclick="kirimPerintah('4')">Tutup Garasi (Ketik 4)</button>
+            </div>
+        </div>
+
+        <div class="card-panel">
+            <h3>💡 Kontrol Lampu Utama</h3>
+            <div class="btn-group">
+                <button class="btn-control btn-light" onclick="kirimPerintah('2')">Nyalakan LED Putih (Ketik 2)</button>
+                <button class="btn-control btn-light" onclick="kirimPerintah('3')">Nyalakan LED Bening (Ketik 3)</button>
+                <button class="btn-control btn-off" onclick="kirimPerintah('5')">Matikan Semua Lampu (Ketik 5)</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    // 1. Menerima Sinyal Kondisi Aman dari Arduino lewat Node.js
+    socket.on("statusAman", (res) => {
+        const statusBox = document.getElementById("statusTeks");
+        statusBox.textContent = res.message;
+        
+        // Kembalikan border live-text ke warna hijau aman
+        document.querySelector(".live-text").style.borderLeft = "4px solid #10b981";
+    });
+
+    // 2. Menerima Sinyal Darurat Kebakaran dari Arduino lewat Node.js
+    socket.on("kebakaranAlert", (res) => {
+        const alertBox = document.getElementById("alertKebakaran");
+        document.getElementById("alertMessage").textContent = res.message;
+        alertBox.style.display = "block"; // Munculkan box merah darurat
+        
+        // Ubah border live-text menjadi merah tanda bahaya
+        document.getElementById("statusTeks").textContent = res.message;
+        document.querySelector(".live-text").style.borderLeft = "4px solid #ef4444";
+    });
+
+    function clearAlert() {
+        document.getElementById("alertKebakaran").style.display = "none";
+    }
+
+    // 3. Fungsi Utama Mengirimkan Angka Perintah (1 s.d 5) ke Server backend
+    function kirimPerintah(angka) {
+        console.log("Mengirim perintah angka: " + angka);
+        fetch("/arduinoApi", {
+            method: "POST",
+            body: JSON.stringify({ data: angka }),
+            headers: { "Content-Type": "application/json" }
+        })
+        .then(res => res.json())
+        .then(hasil => console.log("Status kirim:", hasil))
+        .catch(err => console.log("Gagal transmisi data:", err));
+    }
+</script>
+
+</body>
+</html>
